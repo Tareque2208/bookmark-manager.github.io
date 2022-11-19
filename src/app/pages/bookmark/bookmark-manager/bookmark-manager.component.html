@@ -1,0 +1,128 @@
+<div class="site-page-header-ghost-wrapper">
+  <nz-page-header [nzGhost]="false">
+    <nz-page-header-title>Bookmark Manager</nz-page-header-title>
+    <nz-page-header-extra>
+        <button (click)="showModal()" nz-button nzType="primary">
+          Add Bookmark
+        </button>
+    </nz-page-header-extra>
+
+<!-- <add-bookmark (verifyStatus)="captchVerificationStatus($event)"></add-bookmark> -->
+  </nz-page-header>
+</div>
+<div nz-row [nzGutter]="8">
+  <div nz-col nzSpan="15">
+    <!-- <app-list-bookmarks></app-list-bookmarks> -->
+    <nz-card >
+      <ng-container *ngFor="let item of this.categoryList">
+        <div>
+          <ng-container>
+            <nz-card>
+              <h4 class="card-title">{{ item.name }}</h4>
+              <div *ngIf="item.data">
+                <nz-card *ngFor="let i of item.data">
+                  <h5>{{ i['title'] }}</h5>
+                  <button nz-button nzType="primary" nzShape="round" (click)="showDetails(i)">
+                    Details
+                  </button>
+                </nz-card>
+              </div>
+            </nz-card>
+          </ng-container>
+        </div>
+        <hr />
+      </ng-container>
+    </nz-card>
+
+  </div>
+  <div nz-col nzSpan="9">
+    <nz-card >
+      <ng-container>
+        <div>
+          <ng-container>
+            <nz-card *ngIf="selectedCategory">
+              <h4 class="card-title">{{ selectedCategory.title }}</h4>
+              <h4 class="card-title">{{ selectedCategory.url }}</h4>
+              <h4 class="card-title">{{ selectedCategory.newCategoryName?selectedCategory.newCategoryName : '' }}</h4>
+            </nz-card>
+          </ng-container>
+        </div>
+        <hr />
+      </ng-container>
+      
+    </nz-card>
+    <!-- <app-view-details></app-view-details> -->
+    <!-- <app-create-permission></app-create-permission> -->
+  </div>
+</div>
+
+<nz-modal 
+[(nzVisible)]="isAddBookmarkVisible" nzTitle="Add you favourite bookmark !"
+  (nzOnCancel)="handleCancel()">
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="addBookmarkForm" (ngSubmit)="submitForm()" 
+    class="ant-advanced-search-form">
+      <nz-form-item>
+        <nz-form-control [nzSpan]="14">
+          
+          <div class="col-md-4">
+            <nz-form-label>Title</nz-form-label>
+            <nz-form-control [nzSpan]="20">
+              <input nz-input formControlName="title" type="text" placeholder="Enter title please" />
+            </nz-form-control>
+          </div>
+          <div class="col-md-4">
+            <nz-form-label>Url</nz-form-label>
+            <nz-form-control [nzSpan]="20">
+              <input nz-input formControlName="url" type="text" placeholder="Enter url please" />
+            </nz-form-control>
+          </div>
+          <div class="col-md-4">
+            <nz-form-label>Select from Category Name</nz-form-label>
+            <nz-form-control [nzSpan]="20">
+          <nz-select
+          id="selectedCategoryId"
+          nzShowSearch
+          nzAllowClear
+          formControlName="selectedCategoryId"
+          nzPlaceHolder="Select Category"
+          class="w-100"
+          [nzDisabled]="(isAddNewCategory)"  
+        >
+          <nz-option
+            *ngFor="let status of categoryList"
+            [nzValue]="status.id"
+            [nzLabel]="status.name"
+          >
+          </nz-option>
+        </nz-select>
+            </nz-form-control>
+          </div>
+          <button (click)="addNewCategory()" nz-button nzType="primary">
+            <i nz-icon nzType="plus" nzTheme="outline"></i>
+          </button>
+
+        <div *ngIf="isAddNewCategory" class="col-md-4">
+          <nz-form-label>New Category Name</nz-form-label>
+          <nz-form-control [nzSpan]="20">
+            <input
+              nz-input
+              placeholder="New Category Name"
+              formControlName="newCategoryName"
+              id="newCategoryName"
+            />
+          </nz-form-control>
+        </div>
+
+        </nz-form-control>
+        <div class = "ml-3">
+          <button nz-button nzType="primary" nzShape="round" [disabled]="!addBookmarkForm.valid">
+            Submit
+          </button>
+        </div>
+      </nz-form-item>
+    </form>
+
+  </ng-container>
+  <div *nzModalFooter style="display: none"></div>
+</nz-modal>
